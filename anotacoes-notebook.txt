@@ -1,0 +1,311 @@
+& - "E"
+| - "OU": 
+^ - "OU exclusivo": Vai dar verdadeiro apenas quando uma das operações der verdadeiro. Diferente do "OU" que dá verdadeiro mesmo que duas operações sejam verdadeiras
+
+===Funções para String===
+Formatar: toLowerCase(), toUpperCase(), trim()
+Recortar: substring(inicio), substring(inicio, fim)
+Substituir: Replace(char, char), Replace(string, string)
+Buscar: IndexOf, LastIndexOf
+str.Split(" ")
+
+**************************************************
+
+Toda classe em Java é uma subclasse da Classe Object
+
+- Object poussui os seguintes métodos
+1. getClass: Retorna o tipo do objeto
+2. equals: Compara se o objeto é igual ao outro
+3. hashCode: Retorna um código hash do objeto
+4. toString: Converte o objeto para string
+
+toString
+Por exemplo, queremos imprimir: System.out.println(Product)
+A console deve devolver "entities.Product@72c..."
+
+Usamos a toSring pra "ensinar" o Java como deve devolver a saída
+
+Abrimos um método toString na nossa classe do Objeto
+public String toString() {
+	return name;
+}
+
+Lá no programa devemos mandar product.toString() - Podemos devolver só product no system.out.print que ele vai entender
+
+Para formatar de forma mais complexa devemos alterar dessa forma no nosso método:
+return name + ", $" + price + ", " + quantity + ...
+
+Memória Stack: Onde são criadas as memórias estáticas
+- São bem mais rápidas pois alocam e desalocam automaticamente.  Ficam as paradas mais simples e diretas. Funciona como uma pilha de pratos, o último que entrou é o primeiro que sai
+
+Memória Heap: Onde são criadas as memórias dinâmicas - x = new Triangle();
+- Onde mora a bagunça organizada. Bem mais fléxivel só que mais lerda, porque exige garbage collector pra limpar o que não tá sendo mais usado
+- Consegue armazenar arrays, objetos, entidades...
+- Tu guarda a referência pro objeto na stack, mas o objeto em si tá lá na heap
+
+===CONSTRUTORES===
+- É uma operação especial da classe, que executa no momento da instaciação do objeto
+- Uso comuns:
+1. Iniciar valores dos atributos
+2. Permitir ou obrigar que o objeto recebe dados / dependência no momento de sua instanciação (injeção da dependência)
+
+- Um construtor customizado não for especificado, a classe disponibiliza o construtor padrão
+Product p = New Product();
+
+- É possível especificar mais de um construtor na mesma classe (sobrecarga)
+
+Exemplo this:
+
+public String name;
+
+public Teste(String name) {
+	this.name = name;
+}
+
+O this.name está referenciando o nosso name da public acima, já o = name referencia o String name informado no constructor
+
+Palavra this
+- Referência pro próprio objeto
+- Usos comuns
+1. Diferenciar atributos de variáveis locais;
+2. Passar o próprio objeto como argumento na chamada de um método ou construtor
+
+===Sobrecarga===
+- Recurso que uma classe possui de oferecer mais de uma operação com o mesmo nome, porém com diferentes listas de parâmetros
+- Por exemplo: Tenho um estoque que ainda não tem produtos, então precisamos iniciar com zero (Por padrão as classes, arrays, constructor de java iniciam com valores 0 ou nulos). Podemos fazer assim:
+
+public Product(String nome, double preco, int quantidade) {
+	this.name = name; this.preco = preco; this.quantidade = quantidade;
+}
+
+//Pra conseguir passar um valor nulo na primera instanciação podemos só remover o quantidade no constructor sobrecarregado
+//Como dito, não precisamos colocar this.quantidade = 0 por que lá no java já está zerado
+public Product(String nome, double preco) {
+	this.name = name; this.preco = preco;
+}
+
+===Encapsulamento===
+- Esconder detalhes de implementação de uma classe, apenas expondo apenas operações seguras 
+- Objeto não deve expor nenhum atributo (Modificador de acesso private)
+- Atributos devem ser passados por meio de métodos get e set
+
+*Regra de negócio: Devemos proteger, por exemplo, o atributo de quantidade do nosso estoque para que seja possível apenas realizar consultas nele, operações que alteram a integridade dele devem ser por meio de métodos!*
+
+===MODIFICADORES DE ACESSO===
+- private: O membro só pode ser acesso na própria classe
+- (nada): O membro só pode ser acessado nas classes do mesmo pacote
+- protected: O membro só pode ser acessado no mesmo pacote, bem como em subclasses de pacotes diferentes
+- public: O membro pode ser acessado por todas classes (Ao menos que ele resida em um módulo diferente que não exporte o pacote onde ele está)
+
+===TIPOS REFERÊNCIAS x TIPOS VALOR===
+- Classes são tipos referências
+
+Stack: Recebe o endereço
+Heap: É o endereço onde se guarda os valores das variáveis
+
+p1 = new Product("TV", 900.00, 0); -> p1 na stack vai receber o endereço enquanto lá na heap vão estar os valores de "TV", 900.00, 0
+p2 = p1; -> A p2 só vai copiar o endereço da p1, ou seja, ela vai apontar também pra heap instanciada
+
+p2 = null; -> Não aponta pra nada
+
+- Tipos primitivos são tipos valor
+double x, y
+x = 10
+y = x
+Diferente do tipo referência, na stack elas não vão receber o endereço pra apontar pra lá. Mas sim vão ser "caixinhas" na stack onde vão ser povoadas. A x com 10 e a y vai copiar o valor da x
+
+===GARBAGE COLLECTOR===
+- Processo que automatiza o gerenciamento de memória de um programa em execução (No caso o Heap)
+- Monitora os objetos alocados dinamicamente e desaloca aqueles que não estão mais sendo utilizados´
+
+===Boxing e Unboxing===
+- Quando fazemos um tipo valor virar tipo referência
+- int x = 20; -> Object obj = x; Boxing
+- Unboxing: int y = (int) obj; // Transforma tipo referência em um tipo valor
+
+===Wrapper Classes===
+- São classes equivalentes aos tipos primitivos
+- Boxing e unboxing é natural da linguagem
+- Uso comum: Campos de entidades em sistemas de informação (Pois tipos referência (classes) aceitam valor null e usufruem dos recursos OO)
+
+int: Variável tipo primitivo - Bruto, leve e rápido. Direto na memória
+Integer: Classe empacotadora (Wrapper class) - Uma classe, tem métodos e pode ser null - Serve quando quer usar o valor como objeto, tipo em collections, generics...
+
+===Laço "for each"===
+Sintaxe opicional e simplificada para percorrer coleções
+
+Sintaxe:
+
+for(Tipo apelido : coleção) {
+	<comando1>
+	<comando2>
+}
+
+===LISTAS===
+- Lista é uma estrutura de dados:
+1. Homogênea (dados do mesmo tipo)
+2. Ordenada (Elementos acessados por meio de posições)
+3. Inicia vazia, e seus elementos são alocados sob demanda
+4. Cada elemento ocupa um "nó (ou nodo) da lista"
+
+- Tipo (interface) List
+- Classes que implementam: ArrayList, LinkedList
+- Vantagens
+1. Tamanho variável
+2. Facilidade para se realizar inserções e deleções
+
+- Desvantagens:
+1. Acesso sequencial aos elementos
+
+#VISÃO Interface: Uma interface é um tipo que define apenas a especificação das operações. Pra trabalhar com esse tipo devemos instanciar ele mas a interface não pode ser instanciada. Iremos precisar de uma classe que implementa essa interface#
+
+OPERAÇÕES COM List
+Tamanho da lista: size()
+Inserir elementos na lista: add(obj), add(int, obj)
+Remover elementos da lista: remove(obj), remove(int), removeIf(Predicate)
+Encontrar posição de elemento: indexOf(obj), lastIndexOf(obj)
+Filtrar lista com base em predicado:
+ - List<Integer> result = list.stream().filter(x -> x > 4).collect(Collector.toList());
+Encontrar primeira ocorrência com base em predicado:
+ - Integer result = list.stream().filter(x -> x > 4).findFirst().orElse(null);
+
+- List<Integer> list; 
+Esse <> que nós informamos a nossa wrapper class é o generics - Quando você pode parametrizar a definição de um tipo informando outro tipo
+
+- Para instanciar a lista:
+1. List<String> list = new List<>(); É a forma errada pois o List é uma interface, ou seja, não podemos instanciar. Então...
+2. List<String> list = new ArrayList<>(); Nesse caso vamos implementar nessa interface usando o ArrayList
+
+Para instanciar agora:
+list.add("Maria");
+list.add("Alex");
+list.add("Bob");
+list.add("Anna");
+
+Para imprimir tudo isso:
+for (String x : list) { // Lê-se: Para cada String x pertencente ao minha Lista list faça...
+	System.out.println(x);
+}
+
+Para inserir em uma posição:
+list.add(2, "Marco");
+
+Ver o tamanho da lista:
+System.out.println(list.size());
+
+Para remover:
+list.remove("Anna");
+list.remove(1);
+list.removeIf(x -> x.charAt(0) == 'M'); //
+
+Achar algo:
+list.indexOf("Bob"); // Deve retornar a posição dele no array - Se ele não achar vai retornar um -1
+
+Para devolver um resultado com condição:
+ - List<String> result = list.stream().filter(x -> x.charAt(0) == 'A').collect(Collectors.toList());
+
+String name = list.stream().filter(x -> x.charAt(0) == 'J').findFirst().orElse(null);  
+
+
+===ENTENDENDO TIMEZONE===
+
+GMT - GreenWich Mean Time
+- Horário de Londres
+- Horário padrão UTC - Coordinated Universal Time
+- Também chamado de "Z" time ou Zulu Time
+
+===PADRÃO ISO 8601===
+Data-[hora] local:
+	2022-07-21
+	2022-07-21T14:52
+	2022-07-21T14:52:09
+	2022-07-21T14:52:09.4073 //Fração de segundos
+
+Data-hora global
+	2022-07-23T14:52:09Z
+	2022-07-23T14:52:09.254935Z
+	2022-07-23T14:52:09-03:00
+
+===DateTimeFormatter===
+DateTimeFormatter fmt1 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+DateTimeFormatter fmt3 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault());
+
+DateTimeForammter.ISO_DATE_TIME;
+
+Sempre devemos formatar um Instant que esteja informando um FUSO HORÁRIO!
+
+===DATE LEGADO - Java 7-===
+- Representa um instante | java.util
+- Um objeto Date internamente armazena:
+1. O número de milissegundos desde a meia noite do dia 1 de Janeiro de 1970 GMT (UTC)
+
+===ENUMERAÇÕES===
+- É um tipo especial que serve para especificar de forma literal um conjunto de constantes relacionadas
+- Palavra chave em Java: enum
+- Vantagem: Melhor semântica, código mais legível e auxiliado pelo compilador
+
+===COMPOSIÇÃO=== 
+- É um tipo de associação que permite que um objeto contenha outro
+- Relação de "tem-um" ou "tem-vários"
+- Vantagens: Organização, coesão, flexibilidade, reuso
+
+===CLasses Abstratas===
+- Classes que não podem ser instanciadas
+- É uma forma de garantir herança total: somente subclasses não abstratas podem ser instanciadas, mas nunca a superclasse abstrata
+- Exemplo: Você pode conter uma classe abstrata que recebe os atributos, constructor, getters and setters... E subclasses dela que vão realizar extends nela que já podem receber atributos e instanciações
+
+===MÉTODOS ABSTRATOS===
+- São métodos que não possuem implementação
+- Métodos precisam ser abstratos quando a classe é genérica demais para conter sua implementação
+- Se uma classe possuir pelo um método abstrato, então esta classe também é abstrata
+- Praticamente mesma utilidade das classes abstratadas, você vai ter um método que vai ser utilizado por vários outros métodos de outras classes
+
+===EXCEÇÕES===
+
+Hierarquia de exceções do Java
+
+Throwable -> Error -> OutOfMemoryError (Estouro de memória) | VirtualMachineError (Erro na VM do Java)
+Throwable -> Exception -> IOException (Entrada e saída) | RuntimeException (Não te obriga a tratar)
+Throwable -> Exception -> RuntimeException -> IndexOutOfBoundsException (Posição de array que não existe) | NullPointerException (Variável que tá falando nulo)
+
+===Estrutura try-catch===
+- Bloco try: Contém o código que representa a execução normal do trecho de código que pode acarretar em uma exceção
+- Bloco catch: Contém o código a ser executado caso uma exceção ocorra - Deve ser especificado o tipo da exceção a ser tratada (upcasting é permitido)
+- Para imprimir aquele bloco quando dá exceção na console do Java - e.printStackTrace();
+- Bloco finally: Código a ser executado independentemente de ter ocorrido ou não uma exceção - Fechar arquivo, conexão de banco de dados...
+
+- Lançar exceção: throw new ExceptionName ("Mensagem tratando" e.getMessage());
+
+RuntimeExcpetion: Não te obriga a tratar exceção
+Exception: Você deve tratar a exceção
+
+- Para completar o tratamento da exceção devemos informar se a nossa classe ou método pode lançar uma exceção
+- Classe para trabalhar com arquivos: File
+
+===FileReader e BufferedReader===
+- FileReader: Stream de leitura de caracteres a partir de arquivos
+- BufferedReader: Mais rápido
+obs: stream: Uma sequência
+
+- O BufferedReader é instanciado apartir do FileReader
+String path = "c:\\temp\\in.txt";
+
+fr = new FileReader(path);
+br = nwe BufferedReader(fr);
+
+Ou podemos instanciar assim: BufferedReader br = new BufferedReader(new FileReader(path));
+
+===FileWrite e BufferedWriter===
+- FileWrite: Stream de escrita de caracteres em um arquivo
+	Cria e recria o arquivo: new FileWriter(path)
+	Acrescenta ao arquivo existente: new FileWriter(path, true)
+- BufferedWrite: Mais rápido
+
+===Interfaces===
+- Interface é um tipo que define um conjunto de operação que uma classe deve implementar
+- A interface estabelece um contrato que a classe deve cumprir
+- Pra quê: Para criar sistemas com baixo acomplemento e flexíveis
+
+- A partir do Java 8, interfaces podem ter "default methods" ou "defender methods"
+- Isso possui implicações conceituais e práticas, que serão discutidas mais à frente neste capítulo
+- Primeiro vamost trabalhar com a definição "clássica" de interfaces. Depois vamos acrescentar o conceito de default methods
