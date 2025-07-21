@@ -411,3 +411,167 @@ Assim como tem várias outras formas de implementar essa funcionalidade...
 MethodReference: Product::staticProductPredicate
 
 ===CONSUMER===
+
+- A Consumer<T> é uma interface funcional do Java, tá no pacote java.util.function, e o bagulho serve pra quando tu quer fazer uma ação com um valor, mas sem retornar nada.
+
+- Só tem um método: accept(T t). Ele recebe um valor do tipo T e faz alguma coisa com ele, mas não devolve nada (void). O foco é executar uma ação com efeito colateral (tipo imprimir, salvar, alterar algo etc).
+
+public class ExemploConsumer {
+    public static void main(String[] args) {
+        List<String> nomes = Arrays.asList("João", "Maria", "Pedro");
+
+        Consumer<String> imprimirMaiusculo = nome -> System.out.println(nome.toUpperCase());
+
+        nomes.forEach(imprimirMaiusculo);
+    }
+}
+
+Saída: 
+JOÃO
+MARIA
+PEDRO
+
+===Interface Function<T, R>===
+- Function<T, R> aí é das braba no Java, faz parte da API de funções lambda que veio com o Java 8. É usada pra representar uma função que recebe um valor do tipo T e devolve um valor do tipo R.
+
+@FunctionalInterface
+public interface Function<T, R> {
+    R apply(T t); // método que tu implementa
+}
+
+Exemplo:
+Function<Integer, String> intPraString = (num) -> "Número: " + num;
+
+String resultado = intPraString.apply(5);
+
+System.out.println(resultado); // sai "Número: 5"
+
+Exemplo com Map:
+List<Integer> numeros = List.of(1, 2, 3, 4);
+
+List<String> resultado = numeros.stream()
+    .map(n -> "Número: " + n) // Function<Integer, String>
+    .toList();
+
+System.out.println(resultado);
+
+===SIGNIFICADO PARÂMETROS TIPO GENÉRICO===
+T	Type (Tipo genérico qualquer)	Tipo comumzão: T, List<T>, Consumer<T>
+E	Element (Elemento)	Usado em coleção tipo List<E>, Set<E>
+K	Key (Chave)	Usado em Map<K, V> pra chave
+V	Value (Valor)	Usado em Map<K, V> pro valor
+S, U, R, etc	Tipos adicionais/complementares	Quando tu tem mais de um genérico (tipo copy(List<? extends T>, List<? super T>))
+
+===CRIANDO FUNÇÕES QUE RECEBEM FUNÇÕES COMO ARGUMENTO===
+
+fazerAlgo(String texto, Consumer<String> acao)
+fazerAlgo("E aí mano", t -> System.out.println(t.toUpperCase()));
+//Tu tá mandando a função t -> System.out.println(...) como argumento!
+
+Exemplo+
+public class FuncoesComArgumento {
+
+    public static void main(String[] args) {
+        // Chamando e passando a função como argumento
+        executarComTexto("salve maloqueiro", texto -> {
+            System.out.println("Texto em capslock: " + texto.toUpperCase());
+        });
+
+        // Outro exemplo passando println direto
+        executarComTexto("vamo codar", System.out::println);
+    }
+
+    // Esse método recebe uma função que consome uma String (Consumer<String>)
+    public static void executarComTexto(String texto, Consumer<String> funcao) {
+        System.out.println("Executando função com o texto: " + texto);
+        funcao.accept(texto);
+    }
+}
+
+Saída: 
+Executando função com o texto: salve maloqueiro
+Texto em capslock: SALVE MALOQUEIRO
+Executando função com o texto: vamo codar
+vamo codar
+
+===STREAM===
+- Sequencia de elementos advinda de uma fonte de dados que oferece suporte a "operações agregadas"
+- Stream é uma solução para processar sequência de dados de forma:
+Declarativa (iteração interna: escondida do programador)
+Parallel-friendly (imutável -> thread safe)
+Sem efeitos colaterais
+Sob demanda (lazy evaluation)
+
+- Acesso sequencial (não há índices) Consome ela um por um
+- Single-use: só pode ser "usada" uma vez
+- Pipeline: operações em streams retornam novas streams. Então é possível criar uma cadeia de operações (fluxo de processamento)
+
+Operações Intermediárias e Terminais
+- O pipeline é composto por zero ou mais operações intermediárias e uma terminal.
+- Operação intermediária:
+Produz uma nova streams (encadeamento)
+Só executa quando uma operação terminal é invocada (lazy evaluation)
+- Operação terminal:
+Produz um objeto não-stream (coleção ou outro)
+Determina o fim do processamento da stream
+
+Operações intermediárias
+• filter
+• map
+• flatmap
+• peek
+• distinct
+• sorted
+• skip
+• limit (*)
+
+Operações terminais
+• forEach
+• forEachOrdered
+• toArray
+• reduce
+• collect
+• min
+• max
+• count
+• anyMatch (*)
+• allMatch (*)
+• noneMatch (*)
+• findFirst (*)
+• findAny (*)
+
+- Basta chamar o método stream() ou parallelStream() a partir de qualquer objeto Collection.
+- Outras formas de se criar uma stream incluem:
+• Stream.of
+• Stream.ofNullable
+• Stream.iterate
+
+Exemplo básico:
+List<String> nomes = Arrays.asList("maria", "joão", "pedro", "ana");
+
+nomes.stream()
+    .filter(nome -> nome.length() > 3)     // só quem tem mais de 3 letras
+    .map(String::toUpperCase)              // transforma pra maiúsculo
+    .sorted()                              // ordena
+    .forEach(System.out::println);         // imprime
+
+Saída:
+JOÃO
+MARIA
+PEDRO
+
+===Pipeline (demo)===
+
+List<Integer> list = Arrays.asList(3, 4, 5, 10, 7);
+
+Stream<Integer> st1 = list.stream().map(x -> x * 10);
+System.out.println(Arrays.toString(st1.toArray()));
+
+int sum = list.stream().reduce(0, (x, y) -> x + y);
+System.out.println("Sum = " + sum);
+
+List<Integer> newList = list.stream()
+	.filter(x -> x % 2 == 0)
+	.map(x -> x * 10)
+	.collect(Collectors.toList());
+System.out.println(Arrays.toString(newList.toArray()));

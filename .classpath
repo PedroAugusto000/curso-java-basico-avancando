@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="exercicioEstruturaFor/src"/>
+	<classpathentry kind="src" path="exercicioEstruturaRepetitiva/src"/>
+	<classpathentry kind="src" path="exercicioFixacaoExceptions/src"/>
+	<classpathentry kind="src" path="exercicioFixacaoInterface/src"/>
+	<classpathentry kind="src" path="exercicioFixacaoLista/src"/>
+	<classpathentry kind="src" path="exercicioFixacaoLpoo/src"/>
+	<classpathentry kind="src" path="exercicioFixacaoProduct/src"/>
+	<classpathentry kind="src" path="exercicioFixacaoSet/src"/>
+	<classpathentry kind="src" path="exercicioLista/src"/>
+	<classpathentry kind="src" path="exerciciosLpoo/src"/>
+	<classpathentry kind="src" path="exercicioTaxPayer/src"/>
+	<classpathentry kind="output" path="exercicioEstruturaFor/bin"/>
+</classpath>
