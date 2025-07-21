@@ -220,3 +220,194 @@ public class Cachorro implements Animal {
     // não precisa implementar respirar(), já vem da interface
 }
 
+===INTRODUÇÃO A GENERICS===
+
+- Generics permitem que classes, interfaces e métodos possam ser parametrizados por tipo. Seus benefícios são:
+1) Reuso
+2) Type safety
+3) Performance
+
+Imagina que tu quer criar uma classe Caixa, que guarda qualquer coisa, qualquer tipo — pode ser String, Integer, Cachorro, Carro, o escambau. Sem generics, tu teria que usar Object, tipo assim:
+
+public class Caixa {
+    private Object coisa;
+
+    public void guardar(Object coisa) {
+        this.coisa = coisa;
+    }
+
+    public Object pegar() {
+        return coisa;
+    }
+}
+
+Tem de fazer esse casting
+Caixa c = new Caixa();
+c.guardar("Salve maloqueiro");
+String s = (String) c.pegar(); // Tem que forçar o tipo aqui
+
+Se errar o programa vai estourar em tempo de execução 
+c.guardar(123);
+String s = (String) c.pegar(); 
+
+AGORA COM GENERICS
+public class Caixa<T> {
+    private T coisa;
+
+    public void guardar(T coisa) {
+        this.coisa = coisa;
+    }
+
+    public T pegar() {
+        return coisa;
+    }
+}
+
+Caixa<String> caixaDeString = new Caixa<>();
+caixaDeString.guardar("Fala fiote");
+String texto = caixaDeString.pegar(); // Sem cast, sem dor, só amor
+
+===GENÉRICOS DELIMITADOS (Bounded types)===
+
+Às vezes tu quer que o tipo genérico só aceite certos tipos, tipo: "só quero que isso aceite números", ou "tem que ser um tipo que herda de Animal".
+
+Aí tu usa extends (mesmo se for interface, o Java usa extends):
+
+public class Calculadora<T extends Number> {
+    public double somar(T a, T b) {
+        return a.doubleValue() + b.doubleValue();
+    }
+}
+
+Calculadora<Integer> calcInt = new Calculadora<>();
+System.out.println(calcInt.somar(5, 10)); // 15.0
+
+Calculadora<String> calcErrada = new Calculadora<>(); // Vai dar erro de compilação
+
+===TIPOS CURINGA===
+
+Exemplo: 
+List<Object> myObjs = new ArrayList<>();
+List<Integer> myNumbers = new ArrayList<>();
+myObjs = myNumbers; //erro de compilação
+Explicação: Por mais que Integer seja uma subclasse de Object, uma lista de object não é um supertipo de qualquer tipo de lista, pra funcionar podemos usar um tipo curinga
+
+List<?> myObjs = new ArrayList<Object>();
+List<Integer> myNumbers = new ArrayList<>();
+myObjs = myNumbers; 
+
+OBS: Não podemos adicionar dados a uma coleção de tipo curinga (list.add(3) pra uma lista de List<?> list
+
+===CURINGAS DELIMITADOS (Bounded wildcards)===
+
+Aquela mesma fita: Nós temos uma interface de Shape que é implementada em duas classes, circle e rectangle. Só que uma lista de <Shape> não é um supertipo pra uma lista de <Circle> ou <Rectangle>
+
+Por isso podemos informar pro compilador que:
+
+public static double totalarea(List<? extends Shape> list) // Devemos fazer isso para informar pro compilador qual tipo a nossa lista vai receber, se não ele vai reclamar que não necessariamente a minha lista vai receber dados tipo Shape
+
+===hashCode e equals===
+- As duas são operações da classe Object utilizadas para comparar se um objeto é igual ao outro
+equals: lento, resposta 100% - Não erra nem fudendno
+hashCode: rápido, porém resposta positiva não é 100% - Pequena possibilidade dar um falso positivo
+
+- Tipos comuns (String, Date, Integer, Double, etc) já possuem implementação para essas operações. Classes personalizadas precisam sobrepô-las
+
+sysout(a.equals(b));
+sysout(a.hashCode()); // Vai imprimir um número
+sysout(b.hashCode()); // Vai imprimir um número
+
+Qual a diferença de usar o ==: Esse == ele bate utilizando os endereços de memória dos dados. False pra se os endereços não baterem ou True para caso os endereços sejam iguais
+
+===SET<T>===
+
+- Representa um conjunto de elementos (similar ao da Álgebra)
+1) Não admite repetições
+2) Elementos não possuem posição
+3) Acesso, inserção e remoção de elementos são rápidos
+4) oferece operações eficientes de conjunto: interseção, união, diferença
+5) Principais implementações:
+HashSet - Mais rápido (operação O(1) em tabela hash) e não ordenado
+TreeSet - Mais lento (operações O(log(n)) em árvore rubro-negra) e ordenado pelo compareTo do objeto (Ou Comparator)
+LinkedHashSet - Velocidade intermediária e elementos na ordem em que são adicionados
+
+Alguns méotodos importantes dele:
+1 - add(obj)
+2 - remove(obj)
+3- contains(obj)
+4 - clear()
+5 - size()
+6 - removeIf(predicate)
+7 - addAll(other): adiciona no conjunto de elementos do outro conjunto sem repetição
+8 - retainAll(other): remove do conjunto os elementos não contidos em other
+9 - removeAll: remove do conjunto os elementos contidos em other
+
+#Usa bastante os conceitos de união, interseção e diferença#
+
+O set utilizada, caso tenha hashCode e equals, ele vai verificar os com o hashCode e confirmar com o equals. SE NÃO tiver ele só vai comparar as referências (ponteiros) dos objetos
+
+===Map===
+
+- É uma coleção de pares chave / valor
+Não permite repetições do objeto chave;
+Os elementos são indexados pelo objeto chave (não possuem posição);
+Acesso, inserção e remoção de elementos são rápidos.
+
+- Uso comum: cookies, local storage, qualquer modelo chave-valor
+
+- Principais implementações
+HashMap
+TreeMap
+LinkedHashMap
+
+- Métodos importantes:
+put(key, value), remove(key), containsKey(key), get(key)
+
+Baseados em equals e hashCode. Se não existir, é comparado pelos ponteiros
+
+clear(), size(), keySet() // Retorna um Set<K>, values() // Retorna um Collection<V>
+
+===INTERFACE FUNCIONAL===
+
+É uma interface que possui um único método abstrato. Suas implementações serão tratadas como expressões lambdas
+
+public class MyComparator implements Comparator<Product> {
+	@Override
+	public int compare(Product p1, Product p2) {
+	return p1.getName().toUpperCase().compareTo(p2.getName().toUpperCase());
+	}
+}
+
+public static void main (String[] args) {
+	list.sort(new MyComparator());
+}
+
+===PREDICATE===
+É uma interface generics e contém apenas um método abstrato chamado "test"
+
+public interface Predicate<T> {
+	boolean test(T t);
+}
+
+Por exemplo:
+
+List<Product> list = new ArrayList<>();
+list.removeIf(p -> p.getPrice() >= 100);
+
+Abrimos uma classe que vai implementar a interface do Predicate:
+public class ProductPredicate implements Predicate<Product> {
+	@Override
+	public boolean test(Product p) {
+		return p.getPrice() >= 100.00;
+	}
+}
+
+Ai lá no programa podemos substituir:
+List<Product> list = new ArrayList<>();
+list.removeIf(new ProductPredicate());
+
+Assim como tem várias outras formas de implementar essa funcionalidade...
+
+MethodReference: Product::staticProductPredicate
+
+===CONSUMER===
